@@ -33,6 +33,8 @@ class Keystroke_Watcher(object):
         space:"space"
     }
 
+    pause_program = 192 #`
+
     undo = 90 #z
     reset = 82 #r
 
@@ -44,23 +46,30 @@ class Keystroke_Watcher(object):
     inputc = 73 #i
     load = 76 #l
 
-    stop_rec = 79 #o
-    pause_rec = 80 #p
-    dec_rec = 189 #-
-    inc_rec = 187 #+
+    reset_play = 84 #t
+    pause_play = 79 #o
+    dec_play = 189 #-
+    inc_play = 187 #+
 
     recording = False
     levelinput = False
+    playing = False
+    listening = True
 
     pno = 0
+    step = 0
     rec = []
+    release_time = 0.03
 
     keyboard = None
 
     lcode = ""
-    levelname = ""
+    levelname = "abc-e1"
     levels = {
+        "LA":"lake",
+        "IS":"island",
         "FO":"forest",
+        "RU":"ruin",
         "CA":"cavern",
         "SP":"space",
         "CH":"chasm",
@@ -69,15 +78,16 @@ class Keystroke_Watcher(object):
         "MO":"mountain",
         "QU":"question",
         "DE":"depths",
-        "AB":"abc"
+        "AB":"abc",
+        "ME":"meta"
     }
 
-    engine = None
+    speecheng = None
     folder = "baba record" #TODO get it with API
     
     def __init__(self):
         # initialize Text-to-speech engine
-        self.engine = pyttsx3.init()
+        self.speecheng = pyttsx3.init()
         self.announce("Launched")
         #exit()
         
@@ -87,31 +97,37 @@ class Keystroke_Watcher(object):
    
 
     def on_keyboard_event(self, event):
+        
+
         try:
             #print(event.KeyID)
-            if not(self.recording or self.levelinput):
+            if not self.listening:
+                if event.KeyID == self.pause_program:
+                    self.announce("Program resumed")
+                    self.listening = True
+                return True
+            if event.KeyID == self.pause_program:
+                self.announce("Program paused`")
+                self.listening = False
+                return True
+            if not(self.recording or self.levelinput or self.playing):
                 if event.KeyID == self.fresh_start:
                     self.announce("New Recording started")
                     #beepy.beep(sound='coin')
                     self.recording = True
                     self.rec = []
+                if event.KeyID == self.reset_play:
+                    self.step = 0
+                    self.announce("Playback reset")
                 if event.KeyID == self.start:
                     self.announce("Continue record")
                     #beepy.beep(sound='coin')
                     self.recording = True
                 if  event.KeyID == self.play:
-                    #beepy.beep(sound='coin')
+                    self.playing = True
                     self.pno += 1
                     self.announce(f"Playback {self.pno} started")
                     print(self.rec)
-                    for k in self.rec:
-                        ks = self.codes[k]
-                        print(f"{self.knames[k]} ", end = '', flush=True)
-                        ckeys.press(ks)
-                    #beepy.beep(sound='ready')
-                    print()
-                    self.announce(f"Playback {self.pno} ended")
-
                 if  event.KeyID == self.save:
                     if self.levelname == "":
                         self.announce(f"Level not set. To Save, set level first by pressing I and entering level code")
@@ -190,9 +206,39 @@ class Keystroke_Watcher(object):
                     winsound.Beep(3000, 10)                 
                     print(f"Undone {self.knames[k]}")
                 if  event.KeyID == self.reset:
-                    self.announce("Reset")
+                    self.announce("Level Reset")
                     #self.rec=[]
+
+
+            if self.playing:
+                #beepy.beep(sound='coin')
+                if  event.KeyID == self.pause_play:
+                    print()
+                    self.announce(f"Playback {self.pno} paused")
+                    self.playing = False
+                    return True
                 
+                if self.step < len(self.rec):
+                    k = self.rec[self.step]
+                    ks = self.codes[k]
+                    print(f"Step {self.step}: {self.knames[k]} ", end = '', flush=True)
+                    self.hm.UnhookKeyboard()
+                    ckeys.press(ks, 0.08, self.release_time)
+                    self.hm.HookKeyboard()
+                    #beepy.beep(sound='ready')
+                    self.step += 1                    
+                else:
+                    print()
+                    #self.announce(f"Playback {self.pno} ended") #bug
+                    winsound.Beep(5000, 10)
+                    self.playing = False                    
+
+                if event.KeyID == self.dec_play:
+                    self.release_time += 0.01
+                if event.KeyID == self.inc_play:
+                    self.release_time -= 0.01
+                #TODO reset playback same as recording?
+                #TODO play step by step
                             
             
         finally:
@@ -204,9 +250,9 @@ class Keystroke_Watcher(object):
     
     def announce(self, text):
         print(text)
-        self.engine.say(text)
+        self.speecheng.say(text)
         # play the speech
-        self.engine.runAndWait()
+        self.speecheng.runAndWait()
 
     def getfilename(self, levelname):
         return f"{self.folder}/{levelname}.txt"

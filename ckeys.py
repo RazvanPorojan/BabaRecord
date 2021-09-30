@@ -74,15 +74,15 @@ def ReleaseKey(hexKeyCode):
 # directx scan codes
 # http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
 
-def press(code):
+def press(code,press_time, release_time):
     PressKey(code)
     #time.sleep(0.1)
     #time.sleep(0.06) - ok long time
-    time.sleep(0.08) #08
+    time.sleep(press_time) #08
     ReleaseKey(code)
     #time.sleep(0.03)
     #time.sleep(0.03) - ok long time
-    time.sleep(0.03)
+    time.sleep(release_time)
 
 
 if __name__ == '__main__':
