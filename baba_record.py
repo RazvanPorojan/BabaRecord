@@ -207,7 +207,7 @@ class Keystroke_Watcher(object):
                     print(f"Undone {self.knames[k]}")
                 if  event.KeyID == self.reset:
                     self.announce("Level Reset")
-                    #self.rec=[]
+                    self.rec=[]
 
 
             if self.playing:
