@@ -8,15 +8,16 @@ I created a Python robot that allows recording and playback of the solutions in 
 
 # 2 How to install
 
-Clone the repository.
+Clone the repository:``git clone https://github.com/RazvanPorojan/BabaRecord.git``
 
 Downoad pyHook from [https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyhook](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyhook) for your OS (mine is pyHook‑1.5.1‑cp37‑cp37m‑win\_amd64.whl – for Python 3.7)
 
-pip install C:\Users\xxx\Downloads\pyHook-1.5.1-cp37-cp37m-win\_amd64.whl (if there are issues use this article [https://www.programmerall.com/article/76881747017/](https://www.programmerall.com/article/76881747017/) )
+``pip install C:\Users\xxx\Downloads\pyHook-1.5.1-cp37-cp37m-win\_amd64.whl`` (if there are issues use this article [https://www.programmerall.com/article/76881747017/](https://www.programmerall.com/article/76881747017/) )
 
-pip install pyttsx3
+``pip install pyttsx3``
 
 # 3 How to use
+launch with ``python baba_record.py``
 
 The robot is controlled during the game with the following keys:
 
