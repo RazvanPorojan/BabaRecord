@@ -1,5 +1,5 @@
 from pyHook import HookManager
-from pynput import keyboard
+#from pynput import keyboard
 from win32gui import PumpMessages, PostQuitMessage
 import ckeys
 import winsound
@@ -8,7 +8,7 @@ import os
 import time
 import pyttsx3
        
-
+       
 class Keystroke_Watcher(object):
     
     left = 37
@@ -39,15 +39,18 @@ class Keystroke_Watcher(object):
     reset = 82 #r
 
     fresh_start = 220 #\ 
-    start = 219 #[
-    stop = 221 #]
-    play = 186 #;
+    cont_start = 219 #[
+    pause_rec = 221 #]
+    
     save = 222 #'
-    inputc = 73 #i
+    input_code = 73 #i
     load = 76 #l
 
-    reset_play = 84 #t
+    start_play = 186 #;
     pause_play = 79 #o
+
+    reset_play = 84 #t
+    
     dec_play = 189 #-
     inc_play = 187 #+
 
@@ -83,7 +86,7 @@ class Keystroke_Watcher(object):
     }
 
     speecheng = None
-    folder = "baba record" #TODO get it with API
+    folder = "levels" #TODO get it with API
     
     def __init__(self):
         # initialize Text-to-speech engine
@@ -119,11 +122,11 @@ class Keystroke_Watcher(object):
                 if event.KeyID == self.reset_play:
                     self.step = 0
                     self.announce("Playback reset")
-                if event.KeyID == self.start:
+                if event.KeyID == self.cont_start:
                     self.announce("Continue record")
                     #beepy.beep(sound='coin')
                     self.recording = True
-                if  event.KeyID == self.play:
+                if  event.KeyID == self.start_play:
                     self.playing = True
                     self.pno += 1
                     self.announce(f"Playback {self.pno} started")
@@ -144,7 +147,7 @@ class Keystroke_Watcher(object):
                             f.flush()
                     #beepy.beep(sound='coin')
 
-                if  event.KeyID == self.inputc:
+                if  event.KeyID == self.input_code:
                     #beepy.beep(sound='coin')
                     self.announce("Enter level code")
                     self.levelinput = True
@@ -190,7 +193,7 @@ class Keystroke_Watcher(object):
                         self.lcode = ""
 
             if self.recording:
-                if  event.KeyID == self.stop:
+                if  event.KeyID == self.pause_rec:
                     self.announce("Recording stopped")
                     #beepy.beep(sound='ready')
                     self.recording = False
