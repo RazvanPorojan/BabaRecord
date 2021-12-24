@@ -34,6 +34,7 @@ class Keystroke_Watcher(object):
     }
 
     pause_program = 192 #`
+    quit_program = 81 #q
 
     undo = 90 #z
     reset = 82 #r
@@ -86,7 +87,7 @@ class Keystroke_Watcher(object):
     }
 
     speecheng = None
-    folder = "levels" #TODO get it with API
+    folder = "levels"
     
     def __init__(self):
         # initialize Text-to-speech engine
@@ -104,6 +105,9 @@ class Keystroke_Watcher(object):
 
         try:
             #print(event.KeyID)
+            if event.KeyID == self.quit_program:
+                self.announce("Quit")
+                self.shutdown()
             if not self.listening:
                 if event.KeyID == self.pause_program:
                     self.announce("Program resumed")
@@ -241,7 +245,8 @@ class Keystroke_Watcher(object):
                 if event.KeyID == self.inc_play:
                     self.release_time -= 0.01
                 #TODO reset playback same as recording?
-                #TODO play step by step
+                #TODO play step by step - Done
+                #TODO re-add play continously
                             
             
         finally:
